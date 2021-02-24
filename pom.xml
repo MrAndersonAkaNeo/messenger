@@ -18,6 +18,7 @@
     <properties>
         <java.version>11</java.version>
         <jjwt.version>0.9.0</jjwt.version>
+        <liquibase.version>4.3.1</liquibase.version>
     </properties>
 
     <dependencies>
@@ -51,6 +52,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
         </dependency>
 
         <!-- JWT -->
