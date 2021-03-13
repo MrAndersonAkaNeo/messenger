@@ -25,8 +25,7 @@ public class MessengerUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(s);
 
-        boolean superUser = user.isSuperUser();
-        Roles userRole = superUser ? Roles.ADMIN : Roles.USER;
+        Roles userRole = Roles.USER;
         List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(userRole.name());
 
         return MessengerUserDetails
