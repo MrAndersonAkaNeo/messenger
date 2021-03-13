@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,19 +21,23 @@ public class User extends BaseEntity {
 
     private static final long serialVersionUID = 7412067556079052833L;
 
+    @NotNull
+    @Column(unique = true)
     private String username;
 
+    @NotNull
+    @Column(unique = true)
     private String email;
 
+    @NotNull
     private String firstname;
 
     private String lastname;
 
     @Column(name = "is_enabled")
-    private boolean isEnabled;
+    private boolean enabled;
 
-    private boolean superUser;
-
+    @NotNull
     @Column(name = "password_hash")
     private String password;
 
@@ -41,12 +46,6 @@ public class User extends BaseEntity {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "friend_id"))
     private Set<User> friends = new HashSet<>();
-
-   /* @ManyToMany
-    @JoinTable(name = "friendship",
-            joinColumns = @JoinColumn(name = "friend_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> friendOf = new HashSet<>();*/
 
     @ManyToMany
     @JoinTable(name = "user_chat",

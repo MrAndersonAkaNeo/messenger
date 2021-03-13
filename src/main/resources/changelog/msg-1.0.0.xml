@@ -24,7 +24,7 @@
             </column>
 
             <column name="lastname" type="VARCHAR(255)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
 
             <column name="password_hash" type="VARCHAR(255)">
@@ -35,9 +35,6 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="super_user" type="BOOLEAN">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
     </changeSet>
 
