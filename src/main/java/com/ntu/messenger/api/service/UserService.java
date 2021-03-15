@@ -14,9 +14,12 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public Set<User> findUsersByUsernames(List<String> usernames) {
-        return userRepository.findAllByUsernameIn(usernames);
+    public Set<User> findUsersByIdIn(List<Long> ids) {
+        return userRepository.findAllByIdIn(ids);
     }
 
+    public User findUserById(Long id) {
+        return userRepository.getOne(id);
+    }
 
 }

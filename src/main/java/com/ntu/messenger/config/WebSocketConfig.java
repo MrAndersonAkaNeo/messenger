@@ -24,7 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setCacheLimit(32768)
                 .setApplicationDestinationPrefixes("/app")
-                .enableSimpleBroker("/topic");
+                .enableSimpleBroker("/user");
     }
 
     @Override
