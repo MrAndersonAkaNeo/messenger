@@ -23,6 +23,4 @@ public class UserCreateDto {
     @NotNull
     private String password;
 
-
-
 }
