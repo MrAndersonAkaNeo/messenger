@@ -3,7 +3,9 @@ package com.ntu.messenger.api.service;
 import com.ntu.messenger.data.dto.message.MessageSendDto;
 import com.ntu.messenger.data.model.Chat;
 import com.ntu.messenger.data.model.Message;
+import com.ntu.messenger.data.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,8 @@ public class MessageService {
 
     private final ChatService chatService;
     private final UserService userService;
+    private final MessageRepository messageRepository;
+
 
     @Transactional
     public Message saveMessage(MessageSendDto messageSendDto) {
@@ -25,6 +29,9 @@ public class MessageService {
 
         createChatIfNotExists(messageSendDto, message);
 
+        messageRepository.save(message);
+        Hibernate.initialize(message.getRecipient());
+        Hibernate.initialize(message.getSender());
         return message;
     }
 

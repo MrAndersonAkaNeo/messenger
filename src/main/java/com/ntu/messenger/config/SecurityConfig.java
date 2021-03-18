@@ -1,6 +1,7 @@
 package com.ntu.messenger.config;
 
 import com.ntu.messenger.data.repository.UserRepository;
+import com.ntu.messenger.security.filter.CorsFilter;
 import com.ntu.messenger.security.filter.JwtAuthorizationFilter;
 import com.ntu.messenger.security.filter.UsernamePasswordFilter;
 import com.ntu.messenger.security.jwt.JwtAuthenticationProvider;
@@ -60,6 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .addFilter(new UsernamePasswordFilter(authenticationManager(), jwtTokenService()))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+                .addFilterBefore(simpleCorsFilter(), UsernamePasswordFilter.class)
 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
@@ -88,6 +90,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
         auth.authenticationProvider(jwtAuthenticationProvider());
+    }
+
+    @Bean
+    public CorsFilter simpleCorsFilter() {
+        return new CorsFilter();
     }
 
     @Bean
