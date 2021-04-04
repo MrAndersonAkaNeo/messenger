@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
     <changeSet author="Kostiantyn Vozniuk" id="USR-1614199217" logicalFilePath="changelog/msg-1.0.0.xml">
-        <createTable tableName="User">
+        <createTable tableName="user">
             <column name="id" type="BIGINT(20)" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
@@ -35,20 +35,35 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="updated_date" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+
         </createTable>
     </changeSet>
 
     <changeSet author="Kostiantyn Vozniuk" id="USR-1614199230" logicalFilePath="changelog/msg-1.0.0.xml">
-        <createTable tableName="Chat">
+        <createTable tableName="chat">
             <column name="id" type="BIGINT(20)" autoIncrement="true">
                 <constraints primaryKey="true"/>
+            </column>
+
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="updated_date" type="DATETIME">
+                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
 
-
     <changeSet author="Kostiantyn Vozniuk" id="USR-1614199350" logicalFilePath="changelog/msg-1.0.0.xml">
-        <createTable tableName="Message">
+        <createTable tableName="message">
             <column name="id" type="BIGINT(20)" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
@@ -60,19 +75,27 @@
             <column name="sender_id" type="BIGINT(20)">
                 <constraints nullable="false"
                              foreignKeyName="fk_sender_id"
-                             references="User(id)"/>
+                             references="user(id)"/>
             </column>
 
             <column name="recipient_id" type="BIGINT(20)">
                 <constraints nullable="false"
                              foreignKeyName="fk_recipient_id"
-                             references="User(id)"/>
+                             references="user(id)"/>
             </column>
 
             <column name="chat_id" type="BIGINT(20)">
                 <constraints nullable="false"
                              foreignKeyName="fk_chat_id"
-                             references="Chat(id)"/>
+                             references="chat(id)"/>
+            </column>
+
+            <column name="created_date" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="updated_date" type="DATETIME">
+                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
@@ -80,11 +103,11 @@
     <changeSet author="Kostiantyn Vozniuk" id="USR-1614199450" logicalFilePath="changelog/msg-1.0.0.xml">
         <createTable tableName="friendship">
             <column name="user_id" type="BIGINT(20)">
-                <constraints nullable="false" foreignKeyName="fk_friendship_user_id" references="User(id)" />
+                <constraints nullable="false" foreignKeyName="fk_friendship_user_id" references="user(id)" />
             </column>
 
             <column name="friend_id" type="BIGINT(20)">
-                <constraints nullable="false" foreignKeyName="fk_friendship_friend_id" references="User(id)" />
+                <constraints nullable="false" foreignKeyName="fk_friendship_friend_id" references="user(id)" />
             </column>
         </createTable>
     </changeSet>
@@ -92,11 +115,11 @@
     <changeSet author="Kostiantyn Vozniuk" id="USR-1614199550" logicalFilePath="changelog/msg-1.0.0.xml">
         <createTable tableName="user_chat">
             <column name="user_id" type="BIGINT(20)">
-                <constraints nullable="false" foreignKeyName="fk_chat_user_user_id" references="User(id)" />
+                <constraints nullable="false" foreignKeyName="fk_chat_user_user_id" references="user(id)" />
             </column>
 
             <column name="chat_id" type="BIGINT(20)">
-                <constraints nullable="false" foreignKeyName="fk_chat_user_chat_id" references="Chat(id)" />
+                <constraints nullable="false" foreignKeyName="fk_chat_user_chat_id" references="chat(id)" />
             </column>
         </createTable>
     </changeSet>

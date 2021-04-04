@@ -18,11 +18,18 @@
             stompClient.setConnected(true);
         });
 
-        stompClient.subscribe('/topic/messages/user/2', function (msg) {
+        stompClient.subscribe('/topic/messages/user/1', function (msg) {
             console.log(msg);
         });
 
         stompClient.send("/app/chat", {}, JSON.stringify({'text' : "hello kirill", 'senderId' : 1, 'recipientId': 2}));
+
+        stompClient.subscribe('/topic/messages/user/2', function (msg) {
+            console.log(msg);
+        });
+
+        stompClient.send("/app/chat", {}, JSON.stringify({'text' : "hello kostya", 'senderId' : 2, 'recipientId': 1}));
+
     }
 </script>
 

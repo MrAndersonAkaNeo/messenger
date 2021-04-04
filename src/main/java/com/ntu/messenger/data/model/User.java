@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
+@Table(name = "user")
 @Entity
 @Getter
 @Setter

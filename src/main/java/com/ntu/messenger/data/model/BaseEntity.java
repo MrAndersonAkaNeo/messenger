@@ -19,13 +19,15 @@ import java.util.Date;
 public abstract class BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
     @CreationTimestamp
+    @Column(name = "created_date")
     protected Date createdDate;
 
     @UpdateTimestamp
+    @Column(name = "updated_date")
     protected Date updatedDate;
 
 }
