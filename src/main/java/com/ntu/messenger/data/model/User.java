@@ -1,9 +1,6 @@
 package com.ntu.messenger.data.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
@@ -11,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
+@Table(name = "user")
 @Entity
 @Getter
 @Setter
@@ -48,9 +46,16 @@ public class User extends BaseEntity {
     private Set<User> friends = new HashSet<>();
 
     @ManyToMany
+    @Setter(AccessLevel.PRIVATE)
     @JoinTable(name = "user_chat",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "chat_id"))
     private Set<Chat> userChats = new HashSet<>();
+
+    public void assignChat(Chat chat) {
+        userChats.add(chat);
+        chat.getChatParticipants().add(this);
+    }
+
 }
 

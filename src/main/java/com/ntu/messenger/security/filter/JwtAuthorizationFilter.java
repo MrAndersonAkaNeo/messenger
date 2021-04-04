@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -48,7 +49,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             Authentication authentication = authenticate(header);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(req, res);
-        } catch (Exception failed) {
+        } catch (AuthenticationException failed) {
             log.warn("Unsuccessful authentication attempt");
             unsuccessfulAuthentication(req, res, failed);
         }

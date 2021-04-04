@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Test SockJs</title>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous"></script>
+</body>
+
+<script>
+    function connectToWs() {
+        let socket = new SockJS('http://localhost:8080/ws');
+        let stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            stompClient.setConnected(true);
+        });
+
+        stompClient.subscribe('/topic/messages/user/1', function (msg) {
+            console.log(msg);
+        });
+
+        stompClient.send("/app/chat", {}, JSON.stringify({'text' : "hello kirill", 'senderId' : 1, 'recipientId': 2}));
+
+        stompClient.subscribe('/topic/messages/user/2', function (msg) {
+            console.log(msg);
+        });
+
+        stompClient.send("/app/chat", {}, JSON.stringify({'text' : "hello kostya", 'senderId' : 2, 'recipientId': 1}));
+
+    }
+</script>
+
+</html>

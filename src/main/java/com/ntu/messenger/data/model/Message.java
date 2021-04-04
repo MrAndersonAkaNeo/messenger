@@ -3,13 +3,12 @@ package com.ntu.messenger.data.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Getter
 @Setter
 @Entity
+@Table(name = "message")
 public class Message extends BaseEntity {
 
     @ManyToOne
@@ -24,6 +23,7 @@ public class Message extends BaseEntity {
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;
 
+    @Column(columnDefinition = "text")
     private String text;
 
 }
