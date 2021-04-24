@@ -1,4 +1,4 @@
-package com.ntu.messenger.api.controller;
+package com.ntu.messenger.api.controller.ws;
 
 import com.ntu.messenger.api.service.MessageService;
 import com.ntu.messenger.data.converter.MessageMapper;
@@ -26,5 +26,4 @@ public class StompController {
         MessageDto dto = MessageMapper.MAPPER.map(msg);
         messagingTemplate.convertAndSend( "/topic/messages/user/" + message.getRecipientId(), dto);
     }
-
 }

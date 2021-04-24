@@ -25,4 +25,5 @@ public class UserCreateDto {
     @NotBlank
     private String password;
 
+    private String phoneNumber;
 }

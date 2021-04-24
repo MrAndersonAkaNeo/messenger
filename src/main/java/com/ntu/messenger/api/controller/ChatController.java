@@ -7,9 +7,8 @@ import com.ntu.messenger.data.dto.chat.ChatDto;
 import com.ntu.messenger.data.model.Chat;
 import com.ntu.messenger.data.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +25,12 @@ public class ChatController extends SecurityController {
         User current = userService.findUserById(getUserDetails().getId());
         List<Chat> userChats = chatService.getUserChats(current);
         return ChatMapper.MAPPER.map(userChats);
+    }
+
+    @DeleteMapping(path = "{id}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void deleteUserChat(@PathVariable("id") Long chatId) {
+        User requester = userService.findUserById(getUserDetails().getId());
+        chatService.removeChat(requester, chatId);
     }
 }

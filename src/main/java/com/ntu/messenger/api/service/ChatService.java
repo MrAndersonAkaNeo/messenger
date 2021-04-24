@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -26,9 +27,9 @@ public class ChatService {
         Set<User> participants = userService.findUsersByIdIn(chatParticipantsIds);
         if (participants.size() == 2) {
             validateThatChatNotExists(participants);
-            chatRepository.save(chat);
             participants.forEach(p -> p.assignChat(chat));
-            return chat;
+            chat.getChatParticipants().addAll(participants);
+            return chatRepository.save(chat);
         }
         return null;
     }
@@ -45,6 +46,22 @@ public class ChatService {
     @Transactional(readOnly = true)
     public List<Chat> getUserChats(User user) {
         return new ArrayList<>(user.getUserChats());
+    }
+
+    @Transactional
+    public void removeChat(User requester, Long chatId) {
+        Chat chat = chatRepository.findById(chatId).orElseThrow(EntityNotFoundException::new);
+        verifyRequesterHasChatAccess(requester, chat);
+        chat.getChatParticipants().forEach(member -> member.removeChat(chat));
+        chat.getChatParticipants().clear();
+        chatRepository.delete(chat);
+    }
+
+    private void verifyRequesterHasChatAccess(User requester, Chat chat) {
+        if (chat.getChatParticipants().contains(requester)) {
+            return;
+        }
+        throw new EntityNotFoundException("Access denied");
     }
 
     private void validateThatChatNotExists(Set<User> participants) {

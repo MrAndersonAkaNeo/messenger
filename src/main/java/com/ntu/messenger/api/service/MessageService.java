@@ -9,7 +9,7 @@ import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class MessageService {
         if (chat != null) {
             message.setChat(chat);
         } else {
-            Chat newChat = chatService.createChatBetween(List.of(messageSendDto.getRecipientId(), messageSendDto.getSenderId()));
+            Chat newChat = chatService.createChatBetween(Arrays.asList(messageSendDto.getRecipientId(), messageSendDto.getSenderId()));
             message.setChat(newChat);
         }
     }

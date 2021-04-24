@@ -59,8 +59,10 @@ public class User extends BaseEntity {
 
     public void assignChat(Chat chat) {
         userChats.add(chat);
-        chat.getChatParticipants().add(this);
     }
 
+    public void removeChat(Chat chat) {
+        userChats.remove(chat);
+    }
 }
 
