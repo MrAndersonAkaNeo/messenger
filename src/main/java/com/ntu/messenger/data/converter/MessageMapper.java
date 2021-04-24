@@ -16,7 +16,7 @@ public interface MessageMapper {
     @Mapping(target = "recipientName", ignore = true)
     @Mapping(target = "senderName", ignore = true)
     @Mapping(target = "sentAt", ignore = true)
-    MessageDto toDto(Message message);
+    MessageDto map(Message message);
 
     @AfterMapping
     default void fixDtoConvert(@MappingTarget MessageDto dto, Message message) {
@@ -24,5 +24,4 @@ public interface MessageMapper {
         dto.setRecipientName(message.getRecipient().getUsername());
         dto.setSentAt(message.getCreatedDate());
     }
-
 }

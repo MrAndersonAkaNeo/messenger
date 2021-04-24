@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper
@@ -15,10 +16,9 @@ public interface UserMapper {
     UserMapper MAPPER = Mappers.getMapper(UserMapper.class);
 
     @Mapping(target = "password", ignore = true)
-    User fromCreateDto(UserCreateDto userCreateDto);
+    User map(UserCreateDto userCreateDto);
 
-    User fromDto(UserDto dto);
+    UserDto map(User user);
 
-    Set<User> fromDtoSet(Set<UserDto> userDtoSet);
-
+    List<UserDto> map(Set<User> users);
 }

@@ -9,7 +9,6 @@ import com.ntu.messenger.security.jwt.service.DefaultJwtTokenService;
 import com.ntu.messenger.security.jwt.service.JwtTokenService;
 import com.ntu.messenger.security.user.MessengerUserDetailsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,11 +39,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${public.signup.path}")
     private String SIGN_UP_PATH;
 
-    @Autowired
-    private JwtConfig jwtConfig;
+    @Value("${cors.allowed.host}")
+    private String CORS_ALLOWED_HOST;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final JwtConfig jwtConfig;
+    private final UserRepository userRepository;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -94,7 +93,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public CorsFilter simpleCorsFilter() {
-        return new CorsFilter();
+        CorsFilter corsFilter = new CorsFilter();
+        corsFilter.setHost(CORS_ALLOWED_HOST);
+        return corsFilter;
     }
 
     @Bean

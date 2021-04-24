@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    username: Ja78cTqtoY
+    password: g8Kq4lgAoC
+    url: jdbc:mysql://remotemysql.com:3306/Ja78cTqtoY
+    driver-class-name: com.mysql.jdbc.Driver

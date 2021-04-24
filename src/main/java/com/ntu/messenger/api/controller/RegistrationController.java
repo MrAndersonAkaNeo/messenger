@@ -21,5 +21,4 @@ public class RegistrationController {
     public ResponseEntity<String> signUp(@RequestBody @Valid UserCreateDto user) {
         return registrationService.signUpUser(user) ? ResponseEntity.status(201).body("Created") : ResponseEntity.status(400).body("Rejected");
     }
-
 }

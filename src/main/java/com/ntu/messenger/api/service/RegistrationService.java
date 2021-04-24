@@ -21,15 +21,16 @@ public class RegistrationService {
 
     @Transactional
     public Boolean signUpUser(UserCreateDto userCreateDto) {
-        User user = userRepository.findByUsername(userCreateDto.getUsername());
-        if (user == null) {
+        User byUsername = userRepository.findByUsername(userCreateDto.getUsername());
+        User byEmail = userRepository.findByEmail(userCreateDto.getEmail());
+        if (byUsername == null && byEmail == null) {
            return createNewUser(userCreateDto);
         }
         return false;
     }
 
     private Boolean createNewUser(UserCreateDto dto) {
-        User user = UserMapper.MAPPER.fromCreateDto(dto);
+        User user = UserMapper.MAPPER.map(dto);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setEnabled(true);
         userRepository.save(user);

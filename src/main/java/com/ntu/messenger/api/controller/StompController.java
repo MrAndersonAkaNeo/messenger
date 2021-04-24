@@ -9,11 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @Slf4j
@@ -26,12 +23,8 @@ public class StompController {
     @MessageMapping("/chat")
     public void processMessageSend(@Payload MessageSendDto message) {
         Message msg = messageService.saveMessage(message);
-        MessageDto dto = MessageMapper.MAPPER.toDto(msg);
+        MessageDto dto = MessageMapper.MAPPER.map(msg);
         messagingTemplate.convertAndSend( "/topic/messages/user/" + message.getRecipientId(), dto);
     }
 
-    @MessageMapping("/test")
-    public void test(@Payload MessageSendDto message) {
-        messagingTemplate.convertAndSend("/topic/test", "test");
-    }
 }

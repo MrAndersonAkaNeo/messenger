@@ -30,6 +30,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         JwtTokenBasedAuthentication tokenAuthentication = (JwtTokenBasedAuthentication) authentication;
         MessengerUserDetails ud = (MessengerUserDetails) getUserDetails(tokenAuthentication);
         userDetailsChecker.check(ud);
+        tokenAuthentication.setPrincipal(ud);
+        tokenAuthentication.setAuthenticated(true);
 
         return tokenAuthentication;
     }

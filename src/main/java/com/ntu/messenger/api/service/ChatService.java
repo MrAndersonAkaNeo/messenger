@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,16 +30,7 @@ public class ChatService {
             participants.forEach(p -> p.assignChat(chat));
             return chat;
         }
-
         return null;
-    }
-
-    private void validateThatChatNotExists(Set<User> participants) {
-        List<Long> ids = participants.stream().map(User::getId).collect(Collectors.toList());
-        Long foundedChat = chatRepository.getChatIdByParticipantsIds(ids.get(0), ids.get(1));
-        if (foundedChat != null) {
-            throw new EntityExistsException("Such chat already exists!");
-        }
     }
 
     @Transactional(readOnly = true)
@@ -47,8 +39,20 @@ public class ChatService {
         if (chatId != null) {
             return chatRepository.getOne(chatId);
         }
-
         return null;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Chat> getUserChats(User user) {
+        return new ArrayList<>(user.getUserChats());
+    }
+
+    private void validateThatChatNotExists(Set<User> participants) {
+        List<Long> ids = participants.stream().map(User::getId).collect(Collectors.toList());
+        Long foundedChat = chatRepository.getChatIdByParticipantsIds(ids.get(0), ids.get(1));
+        if (foundedChat != null) {
+            throw new EntityExistsException("Such chat already exists!");
+        }
     }
 
 }

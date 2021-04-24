@@ -1,28 +1,30 @@
 package com.ntu.messenger.api.controller;
 
 import com.ntu.messenger.api.service.ChatService;
-import com.ntu.messenger.data.dto.user.ChatParticipantsDto;
+import com.ntu.messenger.api.service.UserService;
+import com.ntu.messenger.data.converter.ChatMapper;
+import com.ntu.messenger.data.dto.chat.ChatDto;
+import com.ntu.messenger.data.model.Chat;
+import com.ntu.messenger.data.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/v1/chat")
 @RequiredArgsConstructor
-public class ChatController {
+public class ChatController extends SecurityController {
 
     private final ChatService chatService;
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Long createChatBetween(@Valid @RequestBody ChatParticipantsDto dto) {
-       return chatService.createChatBetween(dto.getParticipantsIds()).getId();
-    }
+    private final UserService userService;
 
     @GetMapping
-    public String securedExampleEndpoint() {
-        return "Hello there";
+    public List<ChatDto> getUserChats() {
+        User current = userService.findUserById(getUserDetails().getId());
+        List<Chat> userChats = chatService.getUserChats(current);
+        return ChatMapper.MAPPER.map(userChats);
     }
-
 }

@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +26,7 @@ public class User extends BaseEntity {
 
     @NotNull
     @Column(unique = true)
+    @Email
     private String email;
 
     @NotNull
@@ -34,6 +36,9 @@ public class User extends BaseEntity {
 
     @Column(name = "is_enabled")
     private boolean enabled;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @NotNull
     @Column(name = "password_hash")

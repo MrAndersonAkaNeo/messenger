@@ -4,17 +4,9 @@ import lombok.Data;
 
 @Data
 public class UserDto {
-
+    private Long id;
     private String username;
-
     private String email;
-
     private String lastname;
-
-    private String password;
-
-    private Boolean isEnabled;
-
-    private Boolean isAdmin;
-
+    private String phoneNumber;
 }
