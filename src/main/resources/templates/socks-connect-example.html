@@ -11,22 +11,52 @@
         crossorigin="anonymous"></script>
 </body>
 
-<script>
-    function connectToWs() {
-        let socket = new SockJS('http://localhost:8080/ws');
-        let stompClient = Stomp.over(socket);
 
-        stompClient.connect({}, function (frame) {
-            stompClient.subscribe('/topic/messages/user/1', function (msg) {
-                console.log(msg);
-            });
-            stompClient.send("/app/chat", {}, JSON.stringify({
-                'text': "just testing..",
-                'senderId': 1,
-                'recipientId': 2
-            }));
+<script>
+      document.body.addEventListener('onload', connectToWs)
+
+    function connectToWs() {
+      let socket = new SockJS('http://localhost:8080/ws');
+      let st = Stomp.over(socket);
+
+      st.connect({}, function (frame) {
+        st.subscribe('/topic/messages/user/1', function (msg) {
+          console.log(msg);
         });
+
+        const users ={
+            v:'voko',
+            k:'kirpich',
+            m:'masha',
+            d:'danylo'
+        }
+        const {v, k, m, d}  = users
+
+        sendMessage(st, 1, 2, v, k)
+        sendMessage(st, 1, 3, v, m)
+        sendMessage(st, 1, 4, v, d)
+
+        sendMessage(st, 2, 1, k, v)
+        sendMessage(st, 2, 3, k, m)
+        sendMessage(st, 2, 4, k, d)
+
+        sendMessage(st, 3, 1, m, v)
+        sendMessage(st, 3, 2, m, k)
+        sendMessage(st, 3, 1, m, d)
+
+        sendMessage(st, 4, 2, d, v)
+        sendMessage(st, 4, 2, d, k)
+        sendMessage(st, 4, 2, d, m)
+      });
     }
-</script>
+
+    const sendMessage=(stompClient, senderId, recipientId, senderName, recipientName)=>{
+        stompClient.send("/app/chat", {}, JSON.stringify({
+            'text': `${senderName} to ${recipientName}`,
+            'senderId': senderId,
+            'recipientId': recipientId
+        }));
+    }
+  </script>
 
 </html>
