@@ -105,13 +105,13 @@
     </changeSet>
 
     <changeSet author="Kostiantyn Vozniuk" id="USR-1614199450" logicalFilePath="changelog/msg-1.0.0.xml">
-        <createTable tableName="friendship">
+        <createTable tableName="contacts">
             <column name="user_id" type="BIGINT(20)">
-                <constraints nullable="false" foreignKeyName="fk_friendship_user_id" references="user(id)"/>
+                <constraints nullable="false" foreignKeyName="fk_contacts_user_id" references="user(id)"/>
             </column>
 
-            <column name="friend_id" type="BIGINT(20)">
-                <constraints nullable="false" foreignKeyName="fk_friendship_friend_id" references="user(id)"/>
+            <column name="contact_user_id" type="BIGINT(20)">
+                <constraints nullable="false" foreignKeyName="fk_contacts_contact_user_id" references="user(id)"/>
             </column>
         </createTable>
     </changeSet>

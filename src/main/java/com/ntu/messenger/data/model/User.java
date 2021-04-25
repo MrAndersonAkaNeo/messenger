@@ -45,10 +45,11 @@ public class User extends BaseEntity {
     private String password;
 
     @ManyToMany
-    @JoinTable(name = "friendship",
+    @Setter(AccessLevel.PRIVATE)
+    @JoinTable(name = "contacts",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "friend_id"))
-    private Set<User> friends = new HashSet<>();
+            inverseJoinColumns = @JoinColumn(name = "contact_user_id"))
+    private Set<User> contacts = new HashSet<>();
 
     @ManyToMany
     @Setter(AccessLevel.PRIVATE)
