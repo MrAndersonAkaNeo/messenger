@@ -48,6 +48,11 @@ public class ChatService {
         return new ArrayList<>(user.getUserChats());
     }
 
+    @Transactional(readOnly = true)
+    public Chat getChatById(Long chatId) {
+        return chatRepository.findById(chatId).orElseThrow(EntityNotFoundException::new);
+    }
+
     @Transactional
     public void removeChat(User requester, Long chatId) {
         Chat chat = chatRepository.findById(chatId).orElseThrow(EntityNotFoundException::new);

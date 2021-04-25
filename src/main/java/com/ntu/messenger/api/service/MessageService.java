@@ -1,15 +1,19 @@
 package com.ntu.messenger.api.service;
 
+import com.ntu.messenger.api.criteria.MessageCriteria;
 import com.ntu.messenger.data.dto.message.MessageSendDto;
 import com.ntu.messenger.data.model.Chat;
 import com.ntu.messenger.data.model.Message;
+import com.ntu.messenger.data.model.User;
 import com.ntu.messenger.data.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +22,6 @@ public class MessageService {
     private final ChatService chatService;
     private final UserService userService;
     private final MessageRepository messageRepository;
-
 
     @Transactional
     public Message saveMessage(MessageSendDto messageSendDto) {
@@ -33,6 +36,28 @@ public class MessageService {
         Hibernate.initialize(message.getRecipient());
         Hibernate.initialize(message.getSender());
         return message;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Message> getMessagesByChatId(Long chatId, User requester, MessageCriteria messageCriteria) {
+        verifyThatUserHasAccess(requester, chatId);
+        Integer size = messageCriteria.getSize();
+        Integer page = messageCriteria.getPage();
+        return messageRepository.getMessagesByChatId(chatId, size, page * size);
+    }
+
+    @Transactional(readOnly = true)
+    public Message getChatLastMessage(Long chatId, User requester) {
+        verifyThatUserHasAccess(requester, chatId);
+        return messageRepository.getLastMessageByChatId(chatId);
+    }
+
+    private void verifyThatUserHasAccess(User user, Long chatId) {
+        Chat chat = chatService.getChatById(chatId);
+        if (chat.getChatParticipants().contains(user)) {
+            return;
+        }
+        throw new EntityNotFoundException("Access denied");
     }
 
     private void createChatIfNotExists(MessageSendDto messageSendDto, Message message) {

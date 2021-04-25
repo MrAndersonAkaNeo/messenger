@@ -8,6 +8,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface MessageMapper {
 
@@ -24,4 +26,7 @@ public interface MessageMapper {
         dto.setRecipientName(message.getRecipient().getUsername());
         dto.setSentAt(message.getCreatedDate());
     }
+
+    List<MessageDto> map(List<Message> messages);
+
 }
