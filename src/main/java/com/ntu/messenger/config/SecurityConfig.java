@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -29,7 +30,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
-@PropertySource("classpath:security.properties")
+@PropertySources(value = {@PropertySource("classpath:security.properties"), @PropertySource("classpath:application.yaml")})
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -38,6 +39,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${public.signup.path}")
     private String SIGN_UP_PATH;
+
+    @Value("${springdoc.swagger-ui.path}")
+    private String API_DOC_PATH;
 
     @Value("${cors.allowed.host}")
     private String CORS_ALLOWED_HOST;
@@ -49,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, SIGN_UP_PATH).permitAll()
+                .antMatchers(HttpMethod.POST, SIGN_UP_PATH, API_DOC_PATH).permitAll()
                 .antMatchers(SECURE_API_PATH).authenticated()
 
                 .and()

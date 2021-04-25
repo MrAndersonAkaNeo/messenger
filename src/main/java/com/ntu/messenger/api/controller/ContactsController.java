@@ -7,6 +7,7 @@ import com.ntu.messenger.data.model.User;
 import com.ntu.messenger.data.model.UserProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,7 +21,7 @@ public class ContactsController extends SecurityController {
     private final UserService userService;
     private final ContactService contactService;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserProjection> getUserContacts(@Valid PageCriteria pageCriteria) {
         User current = userService.findUserById(getUserDetails().getId());
         return contactService.getUserContacts(current, pageCriteria.getSize(), pageCriteria.getPage());

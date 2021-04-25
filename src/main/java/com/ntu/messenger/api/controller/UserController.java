@@ -18,14 +18,14 @@ public class UserController extends SecurityController {
 
     private final UserService userService;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDto> getCurrentUser() {
         User current = userService.findUserById(getUserDetails().getId());
         UserDto dto = UserMapper.MAPPER.map(current);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDto> updateUser(@RequestBody UserCreateDto updateDto) {
         User current = userService.findUserById(getUserDetails().getId());
         UserDto dto = UserMapper.MAPPER.map(userService.updateUser(current, updateDto));

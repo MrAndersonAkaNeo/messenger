@@ -8,6 +8,7 @@ import com.ntu.messenger.data.model.Chat;
 import com.ntu.messenger.data.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class ChatController extends SecurityController {
     private final ChatService chatService;
     private final UserService userService;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ChatDto> getUserChats() {
         User current = userService.findUserById(getUserDetails().getId());
         List<Chat> userChats = chatService.getUserChats(current);

@@ -19,7 +19,7 @@ public class RegistrationController {
 
     private final UserService userService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> signUp(@RequestBody @Valid UserCreateDto user) {
         return userService.signUpUser(user) ? ResponseEntity.status(201).body("Created") : ResponseEntity.status(400).body("Rejected");
     }
