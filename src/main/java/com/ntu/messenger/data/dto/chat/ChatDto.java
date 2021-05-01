@@ -1,11 +1,13 @@
 package com.ntu.messenger.data.dto.chat;
 
 import com.ntu.messenger.data.dto.user.UserDto;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class ChatDto {
     private Long chatId;
     private List<UserDto> chatUsers;

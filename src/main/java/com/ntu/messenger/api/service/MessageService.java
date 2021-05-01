@@ -2,6 +2,7 @@ package com.ntu.messenger.api.service;
 
 import com.ntu.messenger.api.criteria.MessageCriteria;
 import com.ntu.messenger.data.dto.message.MessageSendDto;
+import com.ntu.messenger.data.dto.message.MessageUpdateDto;
 import com.ntu.messenger.data.model.Chat;
 import com.ntu.messenger.data.model.Message;
 import com.ntu.messenger.data.model.User;
@@ -52,9 +53,30 @@ public class MessageService {
         return messageRepository.getLastMessageByChatId(chatId);
     }
 
+    @Transactional
+    public void deleteMessage(Long messageId, User requester) {
+        Message msg = messageRepository.findById(messageId).orElseThrow(EntityNotFoundException::new);
+        verifyUserCanModifyMessage(requester, msg);
+        messageRepository.delete(msg);
+    }
+
+    @Transactional
+    public void modifyMessage(Long messageId, User requester, MessageUpdateDto messageUpdateDto) {
+        Message msg = messageRepository.findById(messageId).orElseThrow(EntityNotFoundException::new);
+        verifyUserCanModifyMessage(requester, msg);
+        msg.setText(messageUpdateDto.getText());
+    }
+
     private void verifyThatUserHasAccess(User user, Long chatId) {
         Chat chat = chatService.getChatById(chatId);
         if (chat.getChatParticipants().contains(user)) {
+            return;
+        }
+        throw new EntityNotFoundException("Access denied");
+    }
+
+    private void verifyUserCanModifyMessage(User user, Message message) {
+        if (message.getSender().equals(user)) {
             return;
         }
         throw new EntityNotFoundException("Access denied");
