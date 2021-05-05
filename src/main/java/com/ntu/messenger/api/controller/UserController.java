@@ -31,4 +31,10 @@ public class UserController extends SecurityController {
         UserDto dto = UserMapper.MAPPER.map(userService.updateUser(current, updateDto));
         return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
     }
+
+    @GetMapping(path = "search/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDto> searchUserByUsername(@PathVariable("username") String username) {
+        UserDto dto = UserMapper.MAPPER.map(userService.findUserByUsername(username));
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
 }

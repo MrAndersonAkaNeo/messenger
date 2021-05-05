@@ -29,6 +29,11 @@ public class UserService {
         return userRepository.getOne(id);
     }
 
+    @Transactional(readOnly = true)
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
     @Transactional
     public Boolean signUpUser(UserCreateDto userCreateDto) {
         User byUsername = userRepository.findByUsername(userCreateDto.getUsername());
