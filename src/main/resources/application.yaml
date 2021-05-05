@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: ${PROFILES:dev}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:changelog/master.xml
+logging:
+  level:
+    root: info
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method

@@ -1,20 +1,15 @@
 package com.ntu.messenger.data.dto.user;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UserDto {
-
+    private Long id;
     private String username;
-
     private String email;
-
     private String lastname;
-
-    private String password;
-
-    private Boolean isEnabled;
-
-    private Boolean isAdmin;
-
+    private String firstname;
+    private String phoneNumber;
 }

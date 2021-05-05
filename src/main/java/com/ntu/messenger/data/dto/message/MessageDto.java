@@ -1,15 +1,16 @@
 package com.ntu.messenger.data.dto.message;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
 public class MessageDto {
-
+    private Long id;
     private String text;
     private String recipientName;
     private String senderName;
     private Date sentAt;
-
 }

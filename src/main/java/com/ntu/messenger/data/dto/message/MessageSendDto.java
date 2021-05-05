@@ -1,12 +1,20 @@
 package com.ntu.messenger.data.dto.message;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
 public class MessageSendDto {
-
+    @NotBlank
     private String text;
-    private Long senderId;
-    private Long recipientId;
 
+    @NotNull
+    private Long senderId;
+
+    @NotNull
+    private Long recipientId;
 }

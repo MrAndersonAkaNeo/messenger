@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +26,7 @@ public class User extends BaseEntity {
 
     @NotNull
     @Column(unique = true)
+    @Email
     private String email;
 
     @NotNull
@@ -35,15 +37,19 @@ public class User extends BaseEntity {
     @Column(name = "is_enabled")
     private boolean enabled;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @NotNull
     @Column(name = "password_hash")
     private String password;
 
     @ManyToMany
-    @JoinTable(name = "friendship",
+    @Setter(AccessLevel.PRIVATE)
+    @JoinTable(name = "contacts",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "friend_id"))
-    private Set<User> friends = new HashSet<>();
+            inverseJoinColumns = @JoinColumn(name = "contact_user_id"))
+    private Set<User> contacts = new HashSet<>();
 
     @ManyToMany
     @Setter(AccessLevel.PRIVATE)
@@ -54,8 +60,10 @@ public class User extends BaseEntity {
 
     public void assignChat(Chat chat) {
         userChats.add(chat);
-        chat.getChatParticipants().add(this);
     }
 
+    public void removeChat(Chat chat) {
+        userChats.remove(chat);
+    }
 }
 

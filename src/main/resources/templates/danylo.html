@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>danylo</title>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+        integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+        crossorigin="anonymous"></script>
+<script src="socks-example.js"></script>
+danylo
+<div>
+    <h2>Connection</h2>
+    <div id="con">
+        MSG
+    </div>
+</div>
+</body>
+<script type="module">
+    import {v, k, m, d, ctWS} from './socks-example.js'
+
+    const connectToWs = () => {
+        const senderID = 4
+        const senderName = d
+        const recipientIDs = [1, 2, 3]
+        const recipientNames = [v, k, m]
+
+        let promise = ctWS(senderID, senderName, recipientIDs, recipientNames)
+        console.log(promise)
+    }
+    document.body.onload = connectToWs
+</script>
+</html>

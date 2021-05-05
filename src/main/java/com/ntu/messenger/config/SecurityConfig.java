@@ -9,12 +9,11 @@ import com.ntu.messenger.security.jwt.service.DefaultJwtTokenService;
 import com.ntu.messenger.security.jwt.service.JwtTokenService;
 import com.ntu.messenger.security.user.MessengerUserDetailsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpMethod;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,12 +24,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
-@PropertySource("classpath:security.properties")
+@PropertySources(value = {@PropertySource("classpath:security.properties"), @PropertySource("classpath:application.yaml")})
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -40,18 +36,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${public.signup.path}")
     private String SIGN_UP_PATH;
 
-    @Autowired
-    private JwtConfig jwtConfig;
+    @Value("${springdoc.swagger-ui.path}")
+    private String API_DOC_PATH;
 
-    @Autowired
-    private UserRepository userRepository;
+    @Value("${cors.allowed.host}")
+    private String CORS_ALLOWED_HOST;
+
+    private final JwtConfig jwtConfig;
+    private final UserRepository userRepository;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, SIGN_UP_PATH).permitAll()
-                .antMatchers(SECURE_API_PATH).authenticated()
+                .cors().and()
+                .csrf().disable()
+                .authorizeRequests().antMatchers(SIGN_UP_PATH, API_DOC_PATH).permitAll().antMatchers(SECURE_API_PATH).authenticated()
 
                 .and()
 
@@ -94,14 +93,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public CorsFilter simpleCorsFilter() {
-        return new CorsFilter();
+        CorsFilter corsFilter = new CorsFilter();
+        corsFilter.setHost(CORS_ALLOWED_HOST);
+        return corsFilter;
     }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
-        return source;
-    }
-
 }

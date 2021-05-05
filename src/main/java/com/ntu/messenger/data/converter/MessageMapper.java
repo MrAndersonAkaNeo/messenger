@@ -8,6 +8,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface MessageMapper {
 
@@ -16,7 +18,7 @@ public interface MessageMapper {
     @Mapping(target = "recipientName", ignore = true)
     @Mapping(target = "senderName", ignore = true)
     @Mapping(target = "sentAt", ignore = true)
-    MessageDto toDto(Message message);
+    MessageDto map(Message message);
 
     @AfterMapping
     default void fixDtoConvert(@MappingTarget MessageDto dto, Message message) {
@@ -24,5 +26,7 @@ public interface MessageMapper {
         dto.setRecipientName(message.getRecipient().getUsername());
         dto.setSentAt(message.getCreatedDate());
     }
+
+    List<MessageDto> map(List<Message> messages);
 
 }

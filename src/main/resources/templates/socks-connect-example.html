@@ -4,33 +4,40 @@
     <meta charset="utf-8">
     <title>Test SockJs</title>
 </head>
+
 <body>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+        integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+        crossorigin="anonymous"></script>
+<div style="font-size: 32px; margin: 4px">
+    <a href="voko.html" target="_blank">voko</a>
+    <a href="kirpich.html" target="_blank">kirpich</a>
+    <a href="masha.html" target="_blank">masha</a>
+    <a href="danylo.html" target="_blank">danylo</a>
+    <div>
+        <button type="button" id="openAll" style="font-size: 32px; margin: 18px">Open all</button>
+    </div>
+    <div id="fr" style="float: left">
+
+    </div>
+</div>
 </body>
 
-<script>
-    function connectToWs() {
-        let socket = new SockJS('http://localhost:8080/ws');
-        let stompClient = Stomp.over(socket);
 
-        stompClient.connect({}, function (frame) {
-            stompClient.setConnected(true);
-        });
+<script type="text/javascript">
+    document.getElementById('openAll').addEventListener('click', () => {
+        createIframe('voko')
+        setTimeout(() => createIframe('kirpich'), 500)
+        setTimeout(() => createIframe('masha'), 1000)
+        setTimeout(() => createIframe('danylo'), 1500)
+    })
 
-        stompClient.subscribe('/topic/messages/user/1', function (msg) {
-            console.log(msg);
-        });
-
-        stompClient.send("/app/chat", {}, JSON.stringify({'text' : "hello kirill", 'senderId' : 1, 'recipientId': 2}));
-
-        stompClient.subscribe('/topic/messages/user/2', function (msg) {
-            console.log(msg);
-        });
-
-        stompClient.send("/app/chat", {}, JSON.stringify({'text' : "hello kostya", 'senderId' : 2, 'recipientId': 1}));
-
+    const createIframe = (name) => {
+        const fr = document.getElementById('fr')
+        const frameElement = document.createElement('iframe')
+        frameElement.setAttribute('src', `${name}.html`)
+        fr.appendChild(frameElement)
     }
 </script>
-
 </html>

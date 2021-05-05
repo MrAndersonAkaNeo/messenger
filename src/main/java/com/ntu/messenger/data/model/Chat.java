@@ -3,10 +3,7 @@ package com.ntu.messenger.data.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +15,7 @@ import java.util.Set;
 @Table(name = "chat")
 public class Chat extends BaseEntity {
 
-    @OneToMany(mappedBy = "chat")
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Message> chatMessages = new ArrayList<>();
 
     @ManyToMany(mappedBy = "userChats")

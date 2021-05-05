@@ -3,24 +3,27 @@ package com.ntu.messenger.data.dto.user;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 public class UserCreateDto {
 
-    @NotNull
+    @NotBlank
     private String username;
 
-    @NotNull
+    @NotBlank
     private String firstname;
 
     private String lastname;
 
-    @NotNull
+    @NotBlank
+    @Email
     private String email;
 
-    @NotNull
+    @NotBlank
     private String password;
 
+    private String phoneNumber;
 }
