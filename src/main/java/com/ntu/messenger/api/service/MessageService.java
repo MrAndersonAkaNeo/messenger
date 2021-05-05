@@ -1,6 +1,7 @@
 package com.ntu.messenger.api.service;
 
 import com.ntu.messenger.api.criteria.MessageCriteria;
+import com.ntu.messenger.data.dto.message.MessageDto;
 import com.ntu.messenger.data.dto.message.MessageSendDto;
 import com.ntu.messenger.data.dto.message.MessageUpdateDto;
 import com.ntu.messenger.data.model.Chat;
@@ -14,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,10 @@ public class MessageService {
         createChatIfNotExists(messageSendDto, message);
 
         messageRepository.save(message);
+        Date lastUpdate = message.getUpdatedDate();
+        Chat chat = message.getChat();
+        chat.setUpdatedDate(lastUpdate);
+
         Hibernate.initialize(message.getRecipient());
         Hibernate.initialize(message.getSender());
         return message;
@@ -51,6 +58,11 @@ public class MessageService {
     public Message getChatLastMessage(Long chatId, User requester) {
         verifyThatUserHasAccess(requester, chatId);
         return messageRepository.getLastMessageByChatId(chatId);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, MessageDto> getChatsLastMessages(User requester) {
+        return null;
     }
 
     @Transactional

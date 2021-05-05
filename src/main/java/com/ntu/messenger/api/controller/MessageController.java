@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +35,12 @@ public class MessageController extends SecurityController {
         return MessageMapper.MAPPER.map(messages);
     }
 
+    @GetMapping(path = "last")
+    public Map<String, MessageDto> getLastChatMessages() {
+        User requester = userService.findUserById(getUserDetails().getId());
+        return messageService.getChatsLastMessages(requester);
+    }
+
     @GetMapping(path = "last/chat/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public MessageDto getLastMessage(@PathVariable("id") Long chatId) {
         User requester = userService.findUserById(getUserDetails().getId());
@@ -45,7 +52,7 @@ public class MessageController extends SecurityController {
     public MessageDto sendMessage(@RequestBody @Valid MessageSendDto messageSendDto) {
         Message msg = messageService.saveMessage(messageSendDto);
         MessageDto dto = MessageMapper.MAPPER.map(msg);
-        messagingTemplate.convertAndSend( "/topic/messages/user/" + messageSendDto.getRecipientId(), dto);
+        messagingTemplate.convertAndSend("/topic/messages/user/" + messageSendDto.getRecipientId(), dto);
         return dto;
     }
 
