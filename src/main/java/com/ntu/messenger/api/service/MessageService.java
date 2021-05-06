@@ -3,7 +3,6 @@ package com.ntu.messenger.api.service;
 import com.ntu.messenger.api.criteria.MessageCriteria;
 import com.ntu.messenger.data.converter.MessageMapper;
 import com.ntu.messenger.data.dto.message.LastMessageDto;
-import com.ntu.messenger.data.dto.message.MessageDto;
 import com.ntu.messenger.data.dto.message.MessageSendDto;
 import com.ntu.messenger.data.dto.message.MessageUpdateDto;
 import com.ntu.messenger.data.model.Chat;
@@ -12,6 +11,8 @@ import com.ntu.messenger.data.model.User;
 import com.ntu.messenger.data.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,6 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +33,8 @@ public class MessageService {
     @Transactional
     public Message saveMessage(MessageSendDto messageSendDto) {
         Message message = new Message();
-        message.setText(messageSendDto.getText());
+
+        message.setText(encrypt(messageSendDto.getText()));
         message.setRecipient(userService.findUserById(messageSendDto.getRecipientId()));
         message.setSender(userService.findUserById(messageSendDto.getSenderId()));
 
@@ -80,7 +81,7 @@ public class MessageService {
     public void modifyMessage(Long messageId, User requester, MessageUpdateDto messageUpdateDto) {
         Message msg = messageRepository.findById(messageId).orElseThrow(EntityNotFoundException::new);
         verifyUserCanModifyMessage(requester, msg);
-        msg.setText(messageUpdateDto.getText());
+        msg.setText(encrypt(messageUpdateDto.getText()));
     }
 
     private void verifyThatUserHasAccess(User user, Long chatId) {
@@ -106,6 +107,11 @@ public class MessageService {
             Chat newChat = chatService.createChatBetween(Arrays.asList(messageSendDto.getRecipientId(), messageSendDto.getSenderId()));
             message.setChat(newChat);
         }
+    }
+
+    private String encrypt(String text) {
+        TextEncryptor textEncryptor = Encryptors.delux("Long live the Queen!", "jklhsdafg123piuhsdfbnfpjkn77");
+        return textEncryptor.encrypt(text);
     }
 
 }
