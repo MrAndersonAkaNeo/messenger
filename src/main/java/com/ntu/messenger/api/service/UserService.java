@@ -50,6 +50,11 @@ public class UserService {
         return user;
     }
 
+    @Transactional
+    public void updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+    }
+
     private Boolean createNewUser(UserCreateDto dto) {
         User user = UserMapper.MAPPER.map(dto);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));

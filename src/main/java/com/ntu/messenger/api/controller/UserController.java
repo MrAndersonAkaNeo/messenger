@@ -4,6 +4,7 @@ import com.ntu.messenger.api.service.UserService;
 import com.ntu.messenger.data.converter.UserMapper;
 import com.ntu.messenger.data.dto.user.UserCreateDto;
 import com.ntu.messenger.data.dto.user.UserDto;
+import com.ntu.messenger.data.dto.user.PasswordUpdateDto;
 import com.ntu.messenger.data.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,13 @@ public class UserController extends SecurityController {
         User current = userService.findUserById(getUserDetails().getId());
         UserDto dto = UserMapper.MAPPER.map(userService.updateUser(current, updateDto));
         return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping(path = "password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updatePassword(@RequestBody PasswordUpdateDto updateDto) {
+        User current = userService.findUserById(getUserDetails().getId());
+        userService.updatePassword(current, updateDto.getPassword());
     }
 
     @GetMapping(path = "search/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
