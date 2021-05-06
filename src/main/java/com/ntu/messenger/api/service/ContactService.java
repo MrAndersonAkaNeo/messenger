@@ -34,8 +34,15 @@ public class ContactService {
             contacts.remove(contact);
         }
     }
+
     @Transactional(readOnly = true)
     public List<UserProjection> getUserContacts(User user, Integer limit, Integer page) {
         return userRepository.findAllUsersContacts(user.getId(), limit, limit * page);
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean isInContactList(User user, Long contactId) {
+        User contact = userRepository.findById(contactId).orElseThrow(EntityNotFoundException::new);
+        return user.getContacts().contains(contact);
     }
 }

@@ -8,6 +8,7 @@ import com.ntu.messenger.data.model.UserProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,9 +23,16 @@ public class ContactsController extends SecurityController {
     private final ContactService contactService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserProjection> getUserContacts(@Valid PageCriteria pageCriteria) {
+    public ResponseEntity<List<UserProjection>> getUserContacts(@Valid PageCriteria pageCriteria) {
         User current = userService.findUserById(getUserDetails().getId());
-        return contactService.getUserContacts(current, pageCriteria.getSize(), pageCriteria.getPage());
+        List<UserProjection> userContacts = contactService.getUserContacts(current, pageCriteria.getSize(), pageCriteria.getPage());
+        return new ResponseEntity<>(userContacts, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "present/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> isInContactList(@PathVariable("id") Long id) {
+        User current = userService.findUserById(getUserDetails().getId());
+        return new ResponseEntity<>(contactService.isInContactList(current,id), HttpStatus.OK);
     }
 
     @PostMapping("{id}")
