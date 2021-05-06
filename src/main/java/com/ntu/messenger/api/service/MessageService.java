@@ -1,6 +1,8 @@
 package com.ntu.messenger.api.service;
 
 import com.ntu.messenger.api.criteria.MessageCriteria;
+import com.ntu.messenger.data.converter.MessageMapper;
+import com.ntu.messenger.data.dto.message.LastMessageDto;
 import com.ntu.messenger.data.dto.message.MessageDto;
 import com.ntu.messenger.data.dto.message.MessageSendDto;
 import com.ntu.messenger.data.dto.message.MessageUpdateDto;
@@ -18,6 +20,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,8 +64,9 @@ public class MessageService {
     }
 
     @Transactional(readOnly = true)
-    public Map<String, MessageDto> getChatsLastMessages(User requester) {
-        return null;
+    public List<LastMessageDto> getChatsLastMessages(User requester) {
+        List<Message> lastMessages = messageRepository.getEachUserChatLastMessage(requester.getId());
+        return lastMessages.stream().map(MessageMapper.MAPPER::toLastMessageDto).collect(Collectors.toList());
     }
 
     @Transactional

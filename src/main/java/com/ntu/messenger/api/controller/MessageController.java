@@ -4,6 +4,7 @@ import com.ntu.messenger.api.criteria.MessageCriteria;
 import com.ntu.messenger.api.service.MessageService;
 import com.ntu.messenger.api.service.UserService;
 import com.ntu.messenger.data.converter.MessageMapper;
+import com.ntu.messenger.data.dto.message.LastMessageDto;
 import com.ntu.messenger.data.dto.message.MessageDto;
 import com.ntu.messenger.data.dto.message.MessageSendDto;
 import com.ntu.messenger.data.dto.message.MessageUpdateDto;
@@ -36,7 +37,7 @@ public class MessageController extends SecurityController {
     }
 
     @GetMapping(path = "last")
-    public Map<String, MessageDto> getLastChatMessages() {
+    public List<LastMessageDto> getLastChatMessages() {
         User requester = userService.findUserById(getUserDetails().getId());
         return messageService.getChatsLastMessages(requester);
     }
