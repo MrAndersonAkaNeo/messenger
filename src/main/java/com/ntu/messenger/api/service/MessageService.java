@@ -3,7 +3,6 @@ package com.ntu.messenger.api.service;
 import com.ntu.messenger.api.criteria.MessageCriteria;
 import com.ntu.messenger.data.converter.MessageMapper;
 import com.ntu.messenger.data.dto.message.LastMessageDto;
-import com.ntu.messenger.data.dto.message.MessageDto;
 import com.ntu.messenger.data.dto.message.MessageSendDto;
 import com.ntu.messenger.data.dto.message.MessageUpdateDto;
 import com.ntu.messenger.data.model.Chat;
@@ -12,14 +11,15 @@ import com.ntu.messenger.data.model.User;
 import com.ntu.messenger.data.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,11 +29,13 @@ public class MessageService {
     private final ChatService chatService;
     private final UserService userService;
     private final MessageRepository messageRepository;
+    private final TextEncryptor textEncryptor;
 
     @Transactional
     public Message saveMessage(MessageSendDto messageSendDto) {
         Message message = new Message();
-        message.setText(messageSendDto.getText());
+
+        message.setText(textEncryptor.encrypt(messageSendDto.getText()));
         message.setRecipient(userService.findUserById(messageSendDto.getRecipientId()));
         message.setSender(userService.findUserById(messageSendDto.getSenderId()));
 
@@ -80,7 +82,7 @@ public class MessageService {
     public void modifyMessage(Long messageId, User requester, MessageUpdateDto messageUpdateDto) {
         Message msg = messageRepository.findById(messageId).orElseThrow(EntityNotFoundException::new);
         verifyUserCanModifyMessage(requester, msg);
-        msg.setText(messageUpdateDto.getText());
+        msg.setText(textEncryptor.encrypt(messageUpdateDto.getText()));
     }
 
     private void verifyThatUserHasAccess(User user, Long chatId) {
@@ -96,6 +98,19 @@ public class MessageService {
             return;
         }
         throw new EntityNotFoundException("Access denied");
+    }
+
+    public Message decryptMessage(Message message) {
+        message.setText(textEncryptor.decrypt(message.getText()));
+        return message;
+    }
+
+    public List<Message> decryptMessages(List<Message> messages) {
+        List<Message> encrypted = new ArrayList<>(messages.size());
+        for (Message msg : messages) {
+            encrypted.add(decryptMessage(msg));
+        }
+        return encrypted;
     }
 
     private void createChatIfNotExists(MessageSendDto messageSendDto, Message message) {

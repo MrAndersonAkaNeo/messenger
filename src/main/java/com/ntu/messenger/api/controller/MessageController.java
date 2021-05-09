@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +32,7 @@ public class MessageController extends SecurityController {
     public List<MessageDto> getMessagesByChat(@PathVariable("id") Long chatId, @Valid MessageCriteria messageCriteria) {
         User requester = userService.findUserById(getUserDetails().getId());
         List<Message> messages = messageService.getMessagesByChatId(chatId, requester, messageCriteria);
-        return MessageMapper.MAPPER.map(messages);
+        return MessageMapper.MAPPER.map(messageService.decryptMessages(messages));
     }
 
     @GetMapping(path = "last")
@@ -46,13 +45,13 @@ public class MessageController extends SecurityController {
     public MessageDto getLastMessage(@PathVariable("id") Long chatId) {
         User requester = userService.findUserById(getUserDetails().getId());
         Message message = messageService.getChatLastMessage(chatId, requester);
-        return MessageMapper.MAPPER.map(message);
+        return MessageMapper.MAPPER.map(messageService.decryptMessage(message));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public MessageDto sendMessage(@RequestBody @Valid MessageSendDto messageSendDto) {
-        Message msg = messageService.saveMessage(messageSendDto);
-        MessageDto dto = MessageMapper.MAPPER.map(msg);
+        Message encrypted = messageService.saveMessage(messageSendDto);
+        MessageDto dto = MessageMapper.MAPPER.map(messageService.decryptMessage(encrypted));
         messagingTemplate.convertAndSend("/topic/messages/user/" + messageSendDto.getRecipientId(), dto);
         return dto;
     }
