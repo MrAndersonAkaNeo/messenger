@@ -11,12 +11,12 @@ import com.ntu.messenger.data.model.User;
 import com.ntu.messenger.data.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
-import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -29,12 +29,13 @@ public class MessageService {
     private final ChatService chatService;
     private final UserService userService;
     private final MessageRepository messageRepository;
+    private final TextEncryptor textEncryptor;
 
     @Transactional
     public Message saveMessage(MessageSendDto messageSendDto) {
         Message message = new Message();
 
-        message.setText(encrypt(messageSendDto.getText()));
+        message.setText(textEncryptor.encrypt(messageSendDto.getText()));
         message.setRecipient(userService.findUserById(messageSendDto.getRecipientId()));
         message.setSender(userService.findUserById(messageSendDto.getSenderId()));
 
@@ -81,7 +82,7 @@ public class MessageService {
     public void modifyMessage(Long messageId, User requester, MessageUpdateDto messageUpdateDto) {
         Message msg = messageRepository.findById(messageId).orElseThrow(EntityNotFoundException::new);
         verifyUserCanModifyMessage(requester, msg);
-        msg.setText(encrypt(messageUpdateDto.getText()));
+        msg.setText(textEncryptor.encrypt(messageUpdateDto.getText()));
     }
 
     private void verifyThatUserHasAccess(User user, Long chatId) {
@@ -99,6 +100,19 @@ public class MessageService {
         throw new EntityNotFoundException("Access denied");
     }
 
+    public Message decryptMessage(Message message) {
+        message.setText(textEncryptor.decrypt(message.getText()));
+        return message;
+    }
+
+    public List<Message> decryptMessages(List<Message> messages) {
+        List<Message> encrypted = new ArrayList<>(messages.size());
+        for (Message msg : messages) {
+            encrypted.add(decryptMessage(msg));
+        }
+        return encrypted;
+    }
+
     private void createChatIfNotExists(MessageSendDto messageSendDto, Message message) {
         Chat chat = chatService.getChatByParticipants(messageSendDto.getSenderId(), messageSendDto.getRecipientId());
         if (chat != null) {
@@ -107,11 +121,6 @@ public class MessageService {
             Chat newChat = chatService.createChatBetween(Arrays.asList(messageSendDto.getRecipientId(), messageSendDto.getSenderId()));
             message.setChat(newChat);
         }
-    }
-
-    private String encrypt(String text) {
-        TextEncryptor textEncryptor = Encryptors.delux("Long live the Queen!", "jklhsdafg123piuhsdfbnfpjkn77");
-        return textEncryptor.encrypt(text);
     }
 
 }
