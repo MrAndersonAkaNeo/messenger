@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,7 +41,11 @@ public class MessageController extends SecurityController {
     @GetMapping(path = "last")
     public List<LastMessageDto> getLastChatMessages() {
         User requester = userService.findUserById(getUserDetails().getId());
-        return messageService.getChatsLastMessages(requester);
+        List<Message> encrypted = messageService.getChatsLastMessages(requester);
+        return messageService.decryptMessages(encrypted)
+                             .stream()
+                             .map(MessageMapper.MAPPER::toLastMessageDto)
+                             .collect(toList());
     }
 
     @GetMapping(path = "last/chat/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

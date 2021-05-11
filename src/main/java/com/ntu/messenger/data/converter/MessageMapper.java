@@ -19,6 +19,7 @@ public interface MessageMapper {
     @Mapping(target = "recipientName", ignore = true)
     @Mapping(target = "senderName", ignore = true)
     @Mapping(target = "sentAt", ignore = true)
+    @Mapping(target = "changedAt", ignore = true)
     MessageDto map(Message message);
 
     @AfterMapping
@@ -26,10 +27,12 @@ public interface MessageMapper {
         dto.setSenderName(message.getSender().getUsername());
         dto.setRecipientName(message.getRecipient().getUsername());
         dto.setSentAt(message.getCreatedDate());
+        dto.setChangedAt(message.getUpdatedDate());
     }
 
     List<MessageDto> map(List<Message> messages);
 
+    @Mapping(target = "changedAt", source = "message.updatedDate")
     @Mapping(target = "sentAt", source = "message.createdDate")
     @Mapping(target = "senderName", source = "message.sender.username")
     @Mapping(target = "chatId", source = "message.chat.id")

@@ -13,6 +13,7 @@ public interface ChatMapper {
 
     ChatMapper MAPPER =  Mappers.getMapper(ChatMapper.class);
 
+    @Mapping(target = "modifyDate", source = "updatedDate")
     @Mapping(target = "chatUsers", source = "chatParticipants")
     @Mapping(target = "chatId", source = "id")
     ChatDto map(Chat chat);

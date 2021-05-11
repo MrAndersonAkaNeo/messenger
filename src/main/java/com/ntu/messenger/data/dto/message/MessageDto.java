@@ -13,4 +13,5 @@ public class MessageDto {
     private String recipientName;
     private String senderName;
     private Date sentAt;
+    private Date changedAt;
 }

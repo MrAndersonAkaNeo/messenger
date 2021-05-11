@@ -13,4 +13,5 @@ public class LastMessageDto {
     private String text;
     private Long chatId;
     private Date sentAt;
+    private Date changedAt;
 }

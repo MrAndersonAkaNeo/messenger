@@ -66,9 +66,8 @@ public class MessageService {
     }
 
     @Transactional(readOnly = true)
-    public List<LastMessageDto> getChatsLastMessages(User requester) {
-        List<Message> lastMessages = messageRepository.getEachUserChatLastMessage(requester.getId());
-        return lastMessages.stream().map(MessageMapper.MAPPER::toLastMessageDto).collect(Collectors.toList());
+    public List<Message> getChatsLastMessages(User requester) {
+        return messageRepository.getEachUserChatLastMessage(requester.getId());
     }
 
     @Transactional
