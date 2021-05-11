@@ -19,9 +19,15 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             nativeQuery = true)
     Message getLastMessageByChatId(@Param("chatId") Long chatId);
 
-    @Query(value = "SELECT * FROM message m " +
-                   "JOIN chat ch ON m.chat_id = ch.id " +
-                   "WHERE m.created_date = ch.updated_date AND (m.sender_id = :userId OR m.recipient_id = :userId)", nativeQuery = true)
+    @Query(value = "SELECT m1.* FROM message m1 " +
+                   "JOIN " +
+                   "(" +
+                   "SELECT MAX(created_date) AS lastDate, chat_id " +
+                   "FROM message " +
+                   "GROUP BY chat_id" +
+                   ") AS m2 " +
+                   "ON m1.chat_id = m2.chat_id AND m1.created_date = m2.lastDate " +
+                   "WHERE m1.sender_id = :userId OR m1.recipient_id = :userId", nativeQuery = true)
     List<Message> getEachUserChatLastMessage(@Param("userId") Long userId);
 
 }
