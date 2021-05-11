@@ -13,8 +13,5 @@ public class MessageSendDto {
     private String text;
 
     @NotNull
-    private Long senderId;
-
-    @NotNull
     private Long recipientId;
 }

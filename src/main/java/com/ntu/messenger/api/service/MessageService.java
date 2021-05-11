@@ -32,14 +32,14 @@ public class MessageService {
     private final TextEncryptor textEncryptor;
 
     @Transactional
-    public Message saveMessage(MessageSendDto messageSendDto) {
+    public Message saveMessage(Long senderId, MessageSendDto messageSendDto) {
         Message message = new Message();
 
         message.setText(textEncryptor.encrypt(messageSendDto.getText()));
         message.setRecipient(userService.findUserById(messageSendDto.getRecipientId()));
-        message.setSender(userService.findUserById(messageSendDto.getSenderId()));
+        message.setSender(userService.findUserById(senderId));
 
-        createChatIfNotExists(messageSendDto, message);
+        createChatIfNotExists(senderId, messageSendDto, message);
 
         messageRepository.save(message);
         Date lastUpdate = message.getUpdatedDate();
@@ -112,12 +112,12 @@ public class MessageService {
         return encrypted;
     }
 
-    private void createChatIfNotExists(MessageSendDto messageSendDto, Message message) {
-        Chat chat = chatService.getChatByParticipants(messageSendDto.getSenderId(), messageSendDto.getRecipientId());
+    private void createChatIfNotExists(Long senderId, MessageSendDto messageSendDto, Message message) {
+        Chat chat = chatService.getChatByParticipants(senderId, messageSendDto.getRecipientId());
         if (chat != null) {
             message.setChat(chat);
         } else {
-            Chat newChat = chatService.createChatBetween(Arrays.asList(messageSendDto.getRecipientId(), messageSendDto.getSenderId()));
+            Chat newChat = chatService.createChatBetween(Arrays.asList(messageSendDto.getRecipientId(), senderId));
             message.setChat(newChat);
         }
     }

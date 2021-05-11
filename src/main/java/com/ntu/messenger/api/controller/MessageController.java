@@ -57,7 +57,8 @@ public class MessageController extends SecurityController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public MessageDto sendMessage(@RequestBody @Valid MessageSendDto messageSendDto) {
-        Message encrypted = messageService.saveMessage(messageSendDto);
+        Long senderId = getUserDetails().getId();
+        Message encrypted = messageService.saveMessage(senderId, messageSendDto);
         MessageDto dto = MessageMapper.MAPPER.map(messageService.decryptMessage(encrypted));
         messagingTemplate.convertAndSend("/topic/messages/user/" + messageSendDto.getRecipientId(), dto);
         return dto;
