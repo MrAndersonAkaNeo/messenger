@@ -9,6 +9,7 @@ import java.util.Date;
 @Setter
 public class MessageDto {
     private Long id;
+    private Long chatId;
     private String text;
     private String recipientName;
     private String senderName;
