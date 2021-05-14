@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: ${PROFILES:dev}
+    active: ${PROFILES:prod}
   jpa:
     hibernate:
       ddl-auto: validate
