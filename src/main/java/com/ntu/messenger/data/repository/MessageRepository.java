@@ -11,7 +11,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Query(value = "SELECT * FROM message m WHERE m.chat_id = :chatId " +
                    "ORDER BY m.created_date DESC " +
-                   "LIMIT :offset, :limit", nativeQuery = true)
+                   "LIMIT :limit OFFSET :offset", nativeQuery = true)
     List<Message> getMessagesByChatId(@Param("chatId") Long chatId, @Param("limit") Integer limit, @Param("offset") Integer offset);
 
     @Query(value = "SELECT * FROM message m WHERE m.chat_id = :chatId " +

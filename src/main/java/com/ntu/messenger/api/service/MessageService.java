@@ -1,8 +1,6 @@
 package com.ntu.messenger.api.service;
 
 import com.ntu.messenger.api.criteria.MessageCriteria;
-import com.ntu.messenger.data.converter.MessageMapper;
-import com.ntu.messenger.data.dto.message.LastMessageDto;
 import com.ntu.messenger.data.dto.message.MessageSendDto;
 import com.ntu.messenger.data.dto.message.MessageUpdateDto;
 import com.ntu.messenger.data.model.Chat;
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +53,10 @@ public class MessageService {
         verifyThatUserHasAccess(requester, chatId);
         Integer size = messageCriteria.getSize();
         Integer page = messageCriteria.getPage();
-        return messageRepository.getMessagesByChatId(chatId, size, page * size);
+        if (page == 0) {
+            return messageRepository.getMessagesByChatId(chatId, size, 0);
+        }
+        return messageRepository.getMessagesByChatId(chatId, size, page * size + 1);
     }
 
     @Transactional(readOnly = true)
